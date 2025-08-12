@@ -1,4 +1,4 @@
 
 git add .
-git commit -m "MODIFIED: social login with RTK login | signUp " 
+git commit -m "MODIFIED: deploy to implement SEO" 
 git push origin main
