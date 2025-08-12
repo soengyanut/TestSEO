@@ -11,11 +11,13 @@ import Login from "./pages/auth/Login.jsx";
 import RootLayout from "./components/layouts/root-layout.jsx";
 import Register from "./pages/auth/Register.jsx";
 import Register2 from "./pages/auth/Register2.jsx";
+import { HelmetProvider } from "react-helmet-async";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      <HelmetProvider>
+         <BrowserRouter>
         <Routes>
           <Route element={<RootLayout />}>
             <Route path="/" element={<App />} />
@@ -26,6 +28,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/register" element={<Register2/>} />
         </Routes>
       </BrowserRouter>
+      </HelmetProvider>
     </Provider>
   </StrictMode>
 );
