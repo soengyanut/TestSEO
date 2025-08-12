@@ -1,4 +1,4 @@
 
 git add .
-git commit -m "MODIFIED: deploy to implement SEO by add helmet in homepage" 
+git commit -m "MODIFIED: Done Fix conflict dependency" 
 git push origin main
