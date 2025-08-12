@@ -14,7 +14,7 @@ export const authApi = apiSlice.injectEndpoints({
     }),
     register: build.mutation({
       query: (body) => ({
-        url: `/users/user-signup?emailVerified=false`,
+        url: `/users/user-signup`,
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="/products/:id" element={<ProductDetail />} />
           </Route>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register2 />} />
+          <Route path="/register" element={<Register2/>} />
         </Routes>
       </BrowserRouter>
     </Provider>

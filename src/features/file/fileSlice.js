@@ -4,7 +4,7 @@ export const fileSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     uploadFile: builder.mutation({
       query: (formdata) => ({
-        url: "/files/upload",
+        url: "/medias/upload-multiple",
         method: "POST",
         body: formdata
       })

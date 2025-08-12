@@ -4,7 +4,7 @@ import { auth } from '../../firebase/firebase-config'
 import { useLoginMutation, useRegisterMutation } from "../../features/auth/authSlide";
 
 import { useNavigate } from "react-router";
-import { getDecryptedAccessToken, storeAccessToken } from "../../utils/tokenUtils";
+import { storeAccessToken } from "../../utils/tokenUtils";
 
 export const useLoginWithGoogle = () => {
     // setup login, popup, logout
@@ -17,10 +17,10 @@ export const useLoginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
 
     // calling signup slice 
-    const [signUpRequest, { error: signUpError }] = useRegisterMutation();
+    const [signUpRequest] = useRegisterMutation();
 
     //calling login slice
-    const [loginRequest, { data }] = useLoginMutation();
+    const [loginRequest] = useLoginMutation();
 
     // navigation
     const navigate = useNavigate();
@@ -49,8 +49,7 @@ export const useLoginWithGoogle = () => {
             const user = res.user;
             console.log("Google Info: ", user)
 
-
-            //implement signup with api 
+            // Try to register the user
             try {
                 await signUpRequest({
                     username: user?.displayName.substring(0, 4),
@@ -66,48 +65,38 @@ export const useLoginWithGoogle = () => {
                     confirmPassword: `${user?.displayName.substring(0, 4)}${import.meta.env.VITE_SECRET_KEY}`,
                     profile: user?.photoURL
                 }).unwrap();
-                if (!data) {
-                    console.log("SignUp Failed")
-                }
-                const res = data.json();
-                console.log("Response: ", res);
-                console.log("=====> ", signUpError.code.status)
-
-
+                // If signup is successful, try to login right after
             } catch (error) {
+                // If error is 400 (already exists) or 200, proceed to login
                 console.log("======> error signup : ", error)
                 const checkAuth = error.status;
-
-                if (checkAuth == 400 || checkAuth == 200) {
-                    loginRequest({
-                        email: user?.email,
-                        password: `${user?.displayName.substring(0, 4)}${import.meta.env.VITE_SECRET_KEY}`
-                    }).unwrap();
-
-                    console.log("=====> data: ", data)
-
-                    if (!data) {
-                        console.log("Login isn't success")
-                    }
-                    // const response =await  data.json();
-                    console.log("======>user data after login", data.accessToken)
-
-
-                    // implement to store accessToken in local secure storage
-                    if(data.accessToken){
-                    //      const ENCRYPT_KEY = import.meta.env.VITE_ENCRYPTED_KEY || "teco_accessToken";
-                    // secureLocalStorage.setItem(ENCRYPT_KEY, data?.accessToken);
-                     storeAccessToken(data?.accessToken)
-                     console.log("=====> AfterDecrypted: ", getDecryptedAccessToken())
-                      navigate("/products")
-
-                    }
-                    if(!data.accessToken){
-                         navigate("/login")
-                    }
+                if (!(checkAuth == 400 || checkAuth == 200)) {
+                    setIsPending(false);
+                    setError(error);
+                    return;
                 }
+            }
 
+            // Always try to login after signup attempt
+            try {
+                const loginData = await loginRequest({
+                    email: user?.email,
+                    password: `${user?.displayName.substring(0, 4)}${import.meta.env.VITE_SECRET_KEY}`
+                }).unwrap();
 
+                if (!loginData || !loginData.accessToken) {
+                    console.log("Login isn't success");
+                    navigate("/login");
+                } else {
+                    // Store accessToken
+                    storeAccessToken(loginData.accessToken);
+                    // console.log("=====> AfterDecrypted: ", getDecryptedAccessToken());
+                    navigate("/products");
+                }
+            } catch (loginError) {
+                setError(loginError);
+                console.log("Login error: ", loginError);
+                navigate("/login");
             }
 
             setIsPending(false);
