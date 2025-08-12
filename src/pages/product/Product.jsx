@@ -1,22 +1,37 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useCreateProductMutation, useDeleteProductMutation, useGetProductsQuery, useUpdateProductMutation } from "../../features/product/productSlice2";
+import { useCreateProductMutation, useDeleteProductMutation, useGetProductsQuery } from "../../features/product/productSlice2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useForm } from "react-hook-form";
 import { useUploadFileMutation } from "../../features/file/fileSlice";
+import ProductDetail from "./ProductDetail";
 
 export default function Product() {
-  const { data: productsData, isLoading, refetch } = useGetProductsQuery();
+
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
   const [previewProduct, setPreviewProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState(null); // store image file
   const [preview, setPreview] = useState(null); // object url
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
+const [totalData, setTotalData] = useState(10);
+const { data: productsData, isLoading, refetch } = useGetProductsQuery({
+  page: 0,
+  size: totalData
+});
 
+useEffect(() => {
+  if (productsData?.totalElements) {
+    setTotalData(productsData.totalElements);
+  }
+  if (productsData?.content) {
+    console.log(productsData.content.length);
+  }
+}, [productsData]);
+  
   // Placeholder for update/delete logic
-  const [updateProduct] = useUpdateProductMutation();
+  // const [updateProduct] = useUpdateProductMutation();
   const [uploadFile] = useUploadFileMutation();
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -126,9 +141,9 @@ export default function Product() {
         <img 
           src={row.thumbnail} 
           alt={row.name} 
-          style={{ width: 50, height: 50, objectFit: 'cover' }} 
+          style={{ width: 50, height: 50, objectFit: 'contain' }} 
           onError={(e) => {
-            e.target.src = '/placeholder-image.png'; // Fallback image
+            e.target.src = '/placeholder-image.png'; 
           }}
         />
       ),

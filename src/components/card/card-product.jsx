@@ -14,7 +14,7 @@ export default function CardProduct({ thumbnail, title, id }) {
           <img
             src={thumbnail}
             alt="card image"
-            className="aspect-video w-full object-cover h-[300px]"
+            className="aspect-video w-full object-contain h-[300px]"
           />
         </figure>
         {/*  <!-- Body--> */}

@@ -5,7 +5,10 @@ import SkeletonCardProduct from "./components/card/skeleton-card-product";
 import SEO from "./components/seo/SEOComponent";
 
 function App() {
-  const { data, isLoading } = useGetProductsQuery();
+  const { data, isLoading } = useGetProductsQuery({
+    page: 0, 
+    size: 8
+  });
   const array = [1, 2, 3, 4, 5, 6, 7, 8];
 
   return (

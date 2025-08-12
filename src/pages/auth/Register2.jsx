@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { PiEye } from "react-icons/pi";
-import { email, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUploadFileMutation } from "../../features/file/fileSlice";
 import { useRegisterMutation } from "../../features/auth/authSlide";
@@ -10,8 +10,7 @@ import { useRegisterMutation } from "../../features/auth/authSlide";
 const schema = z.object({
   name: z
     .string()
-    .nonempty("name is required")
-    .lowercase("name must be lowercase"),
+    .nonempty("name is required"),
   email: z.string().nonempty("email is required").email("invalid email"),
   password: z
     .string()
@@ -29,7 +28,6 @@ export default function Register2() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors }
   } = useForm({
     defaultValues: {

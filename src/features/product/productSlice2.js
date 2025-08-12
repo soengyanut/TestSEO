@@ -5,8 +5,8 @@ import { apiSlice } from "../api/apiSlice";
 const productApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getProducts: build.query({
-      query: () => ({
-        url: "/products?page=0&size=49",
+      query: ({page, size}) => ({
+        url: `/products?page=${page}&size=${size}`,
         method: "GET"
       }),
       providesTags: (result) =>

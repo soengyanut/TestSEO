@@ -1,13 +1,12 @@
 import { useParams } from "react-router";
 import { useGetProductByIdQuery } from "../../features/product/productSlice2";
 import React, { useState } from "react";
-import { da } from "zod/locales";
 
 const ProductDetail = () => {
   const [rotate, setRotate] = useState(false);
   const [count, setCount] = useState(0);
   const { id } = useParams();
-  const { data, isLoading } = useGetProductByIdQuery(id);
+  const { data } = useGetProductByIdQuery(id);
 
   const addCount = () => {
     setCount((prev) => prev + 1);
